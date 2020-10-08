@@ -17,18 +17,29 @@
 			fi
 	done
 
-		read -p "Please enter bash [/bin/bash] : " bash
+		read -p "Please enter bash (or hit enter to accept default values) [/bin/bash] : " bash
 			if [ x"$bash" = "x" ]; then
 				bash="/bin/bash"
 			fi
 
-		read -p "Please enter homedir [/home/$username] : " homedir
+		read -p "Please enter homedir (or hit enter to accept default values) [/home/$username] : " homedir
 			if [ x"$homedir" = "x" ]; then
 				homedir="/home/$username"
 			fi
 
-		read -p "Please confirm [y/n] to add the user to the group and create an initial password : " confirm
+		read -p "Please confirm [y/n] to add the user to the group, and create the home directory (no will exit this script) : " confirm
 			if [ "$confirm" = "y" ]; then
 				useradd -g $group -s $bash -d $homedir -m $username
-				passwd $username
+					else
+						exit
 			fi
+			
+		read -p "Please create [y/n] an initial password for this new user (no will exit this script and you must change the password manually) : " confirm2
+			if [ "$confirm2" = "y" ]; then
+				passwd $username
+			fi	
+			
+		read -p "Please create [y/n] a password for root to ensure you can switch users (no will exit this script and you must change the password manually) : " confirm3
+			if [ x"$confirm3" = "x" ]; then
+				passwd root
+			fi	
