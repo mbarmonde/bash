@@ -43,3 +43,27 @@
 			if [ "$confirm3" = "y" ]; then
 				passwd root
 			fi	
+		
+		read -p "To initiate this user for a Teradici PCoIP container choose 'y', otherwise to complete the script choose 'n': " confirm4
+			if [ "$confirm4" = "n" ]; then
+				exit
+				else
+				# The following was derived from this link: https://www.teradici.com/web-help/pcoip_client/linux/20.10/reference/creating_a_docker_container/
+					# Setup a functional user within the docker container with the same permissions as your local user.
+					export uid=1000 gid=1000 && \
+						mkdir -p /etc/sudoers.d/ && \
+						mkdir -p /home/$username && \
+						echo "$username:x:${uid}:${gid}:$username,,,:/home/$username:/bin/bash" >> /etc/passwd && \
+						echo "$username:x:${uid}:" >> /etc/group && \
+						echo "$username ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$username && \
+						chmod 0440 /etc/sudoers.d/$username && \
+						chown ${uid}:${gid} -R /home/$username
+						
+					# Set some Docker environment variables for the current user
+					USER myuser
+					ENV HOME /home/myuser
+					
+					# Set the Docker path for QT to find the keyboard context
+					ENV QT_XKB_CONFIG_ROOT /user/share/X11/xkb
+					ENTRYPOINT exec pcoip-client
+			fi
