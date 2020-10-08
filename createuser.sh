@@ -40,6 +40,6 @@
 			fi	
 			
 		read -p "Please create [y/n] a password for root to ensure you can switch users (no will exit this script and you must change the password manually) : " confirm3
-			if [ x"$confirm3" = "x" ]; then
+			if [ x"$confirm3" = "y" ]; then
 				passwd root
 			fi	
